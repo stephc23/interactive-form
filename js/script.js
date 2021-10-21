@@ -34,11 +34,11 @@ const colorOptions = colorSelect.children;
 colorSelect.disabled = true;
 designSelect.addEventListener('change', e => {
     colorSelect.disabled = false;
-    const selectedTheme = e.target.value;
+    const selectedDesign = e.target.value;
     for (let i = 0; i < colorOptions.length; i++) {
         let option = colorOptions[i];
         let prevOption = colorOptions[i - 1];
-        if (option.dataset.theme === selectedTheme) {
+        if (option.dataset.theme === selectedDesign) {
             option.hidden = false;
             if (option.dataset.theme !== prevOption.dataset.theme) { // Display the first color option of the selected design
                 option.selected = true;
@@ -47,5 +47,25 @@ designSelect.addEventListener('change', e => {
             option.hidden = true;
         }
     }
+});
+
+/*
+In the `Register for Activities` section, set up `Total` to reflect the total cost of selected activities
+*/
+const activitiesFieldset = document.querySelector('#activities');
+const activitiesCostP = document.querySelector('#activities-cost');
+
+activitiesFieldset.addEventListener('change', e => {
+    const checkbox = e.target;
+    const checked = checkbox.checked;
+    const cost = parseInt(checkbox.dataset.cost);
+    let totalCost = parseInt(activitiesCostP.textContent.slice(8));
+    if (checked) {
+        totalCost += cost;
+    } else {
+        totalCost -= cost;
+    }
+    const totalCostDisplay = `Total: $${totalCost}`;
+    activitiesCostP.textContent = totalCostDisplay;
 });
 
