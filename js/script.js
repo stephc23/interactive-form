@@ -50,20 +50,49 @@ designSelect.addEventListener('change', e => {
 });
 
 /*
-In the `Register for Activities` section, set up `Total` to reflect the total cost of selected activities
+In the `Register for Activities` section, set up `Total` to reflect the total cost of selected activities and disable conflicting activities
 */
-const activitiesFieldset = document.querySelector('#activities');
+const activitiesDiv = document.querySelector('#activities-box');
+const activitiesLabels = activitiesDiv.children;
 const activitiesCostP = document.querySelector('#activities-cost');
 
-activitiesFieldset.addEventListener('change', e => {
+function findTimeConflicts(selectedCheckbox, allLabels) {
+    const selectedTime = selectedCheckbox.dataset.dayAndTime;
+    const selectedName = selectedCheckbox.name;
+    const conflicts = [];
+    for(let i = 0; i < allLabels.length; i++) {
+        let label = allLabels[i];
+        let checkbox = label.firstElementChild;
+        let time = checkbox.dataset.dayAndTime;
+        let name = checkbox.name;
+        if (time === selectedTime && name !== selectedName) {
+            conflicts.push(checkbox);
+        } 
+    }
+    return conflicts;
+}
+
+function disableTimeConflicts(isDisabled, labelClass, selectedCheckbox, allLabels) {
+    const conflictCheckboxes = findTimeConflicts(selectedCheckbox, allLabels);
+    for (let i = 0; i < conflictCheckboxes.length; i++) {
+        let checkbox = conflictCheckboxes[i];
+        let label = checkbox.parentNode;
+        checkbox.disabled = isDisabled;
+        label.className = labelClass;
+    }
+}
+
+activitiesDiv.addEventListener('change', e => {
     const checkbox = e.target;
     const checked = checkbox.checked;
     const cost = parseInt(checkbox.dataset.cost);
     let totalCost = parseInt(activitiesCostP.textContent.slice(8));
     if (checked) {
-        totalCost += cost;
+        totalCost += cost; 
+        disableTimeConflicts(true, 'disabled', checkbox, activitiesLabels);
     } else {
         totalCost -= cost;
+        disableTimeConflicts(false, '', checkbox, activitiesLabels);
     }
     const totalCostDisplay = `Total: $${totalCost}`;
     activitiesCostP.textContent = totalCostDisplay;
