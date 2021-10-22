@@ -85,7 +85,7 @@ bitcoinDiv.style.display = 'none';
 paymentSelect.addEventListener('change', e => {
     const selectedOption = e.target.value;
     const divsArray = [creditCardDiv, paypalDiv, bitcoinDiv];
-    for (i = 0; i < divsArray.length; i++) {
+    for (let i = 0; i < divsArray.length; i++) {
         let paymentDiv = divsArray[i];
         let payment = paymentDiv.className;
         if (selectedOption === payment) {
@@ -95,3 +95,58 @@ paymentSelect.addEventListener('change', e => {
         }
     }
 });
+
+/*
+Form validation
+*/
+const form = document.querySelector('form');
+const nameInput = document.querySelector('#name');
+const emailInput = document.querySelector('#email');
+const ccNumInput = document.querySelector('#cc-num');
+const zipInput = document.querySelector('#zip');
+const cvvInput = document.querySelector('#cvv');
+
+function isValidName(name) {
+    if (name === '' || /^\s+$/.test(name)) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+function isValidEmail(email) {
+    return /^[^@]+@[^@.]+\.[a-z]+$/i.test(email);
+}
+
+function isAtLeastOneActivity() {
+    const activitiesDiv = document.querySelector('#activities-box');
+    const activitiesLabels = activitiesDiv.children;
+    for (let i = 0; i < activitiesLabels.length; i++) {
+        let label = activitiesLabels[i];
+        let checkbox = label.firstElementChild;
+        if (checkbox.checked) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function isValidCCNum(ccNum) {
+    return /^\d{13,16}$/.test(ccNum);
+}
+
+function isValidZip(zip) {
+    return /^\d{5}$/.test(zip);
+}
+
+function isValidCVV(cvv) {
+    return /^\d{3}$/.test(cvv);
+}
+
+
+
+
+
+// form.addEventListener('submit', e => {
+//     e.preventDefault();
+// });
