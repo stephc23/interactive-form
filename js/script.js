@@ -69,3 +69,29 @@ activitiesFieldset.addEventListener('change', e => {
     activitiesCostP.textContent = totalCostDisplay;
 });
 
+/*
+In `Payment Info` section, make credit card the default and display appropriate elements for the selected payment option
+*/
+const paymentSelect = document.querySelector('#payment');
+const paymentOptions = paymentSelect.children;
+const creditCardOption = paymentOptions[1];
+const creditCardDiv = document.querySelector('#credit-card');
+const paypalDiv = document.querySelector('#paypal');
+const bitcoinDiv = document.querySelector('#bitcoin');
+
+creditCardOption.selected = true;
+paypalDiv.style.display = 'none';
+bitcoinDiv.style.display = 'none';
+paymentSelect.addEventListener('change', e => {
+    const selectedOption = e.target.value;
+    const divsArray = [creditCardDiv, paypalDiv, bitcoinDiv];
+    for (i = 0; i < divsArray.length; i++) {
+        let paymentDiv = divsArray[i];
+        let payment = paymentDiv.className;
+        if (selectedOption === payment) {
+            paymentDiv.style.display = 'block';
+        } else {
+            paymentDiv.style.display = 'none';
+        }
+    }
+});
