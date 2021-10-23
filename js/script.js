@@ -40,7 +40,7 @@ designSelect.addEventListener('change', e => {
         let prevOption = colorOptions[i - 1];
         if (option.dataset.theme === selectedDesign) {
             option.hidden = false;
-            if (option.dataset.theme !== prevOption.dataset.theme) { // Display the first color option of the selected design
+            if (option.dataset.theme !== prevOption.dataset.theme) {
                 option.selected = true;
             }
         } else {
@@ -56,6 +56,7 @@ const activitiesDiv = document.querySelector('#activities-box');
 const activitiesLabels = activitiesDiv.children;
 const activitiesCostP = document.querySelector('#activities-cost');
 
+// Return an array of checkbox input elements for activities whose time conflicts with that of the selected activity
 function findTimeConflicts(selectedCheckbox, allLabels) {
     const selectedTime = selectedCheckbox.dataset.dayAndTime;
     const selectedName = selectedCheckbox.name;
@@ -72,6 +73,7 @@ function findTimeConflicts(selectedCheckbox, allLabels) {
     return conflicts;
 }
 
+// For each conflicting activity, disable or enable checkbox and label depending on arguments passed
 function disableTimeConflicts(isDisabled, labelClass, selectedCheckbox, allLabels) {
     const conflictCheckboxes = findTimeConflicts(selectedCheckbox, allLabels);
     for (let i = 0; i < conflictCheckboxes.length; i++) {
@@ -135,6 +137,7 @@ const ccInput = document.querySelector('#cc-num');
 const zipInput = document.querySelector('#zip');
 const cvvInput = document.querySelector('#cvv');
 
+// Store validator functions in an object called `validators`
 const validators = {
     isValidName: name => {
         if (name === '' || /^\s+$/.test(name)) {
@@ -176,6 +179,7 @@ const validators = {
     }
 };
 
+// Create a listener to display or hide an existing error message 
 function createListener(validator) {
     return e => {;
         const input = e.target;
@@ -189,6 +193,7 @@ function createListener(validator) {
     }
 }
 
+// Create a listener to display or hide two different error messages depending on type of error, to be used for validating email
 function createEmailListener(filledValidator, formatValidator) {
     return e => {;
         const input = e.target;
@@ -215,6 +220,6 @@ ccInput.addEventListener('input', createListener(validators.isValidCCNum));
 zipInput.addEventListener('input', createListener(validators.isValidZip));
 cvvInput.addEventListener('input', createListener(validators.isValidCVV));
 
-// form.addEventListener('submit', e => {
-//     e.preventDefault();
-// });
+form.addEventListener('submit', e => {
+    e.preventDefault();
+});
