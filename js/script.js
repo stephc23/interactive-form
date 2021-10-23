@@ -223,18 +223,19 @@ function createEmailListener(filledValidator, formatValidator) {
 
 // Return true if all relevant fields are valid
 function isValidForm() {
+    const isValidBeforeCardInfo = 
+        val.isValidName(nameInput.value) && 
+        val.isFormattedEmail(emailInput.value) && 
+        val.isAtLeastOneActivity();
+    const isValidCardInfo = 
+        val.isValidCCNum(ccInput.value) &&
+        val.isValidZip(zipInput.value) &&
+        val.isValidCVV(cvvInput.value);
     if (paymentSelect.value === 'credit-card') {
-        return val.isValidName(nameInput.value) &&
-               val.isFormattedEmail(emailInput.value) &&
-               val.isValidCCNum(ccInput.value) &&
-               val.isValidZip(zipInput.value) &&
-               val.isValidCVV(cvvInput.value) &&
-               val.isAtLeastOneActivity();
+        return isValidBeforeCardInfo && isValidCardInfo;
     } else {
-        return val.isValidName(nameInput.value) &&
-               val.isFormattedEmail(emailInput.value) &&
-               val.isAtLeastOneActivity();
-    } 
+        return isValidBeforeCardInfo;
+    }    
 }
 
 nameInput.addEventListener('input', createListener(val.isValidName));
