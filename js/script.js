@@ -117,7 +117,7 @@ paymentSelect.addEventListener('change', e => {
     for (let i = 0; i < divsArray.length; i++) {
         let paymentDiv = divsArray[i];
         let payment = paymentDiv.className;
-        if (selectedOption === payment) {
+        if (payment === selectedOption) {
             paymentDiv.style.display = 'block';
         } else {
             paymentDiv.style.display = 'none';
@@ -143,7 +143,14 @@ const validators = {
             return true;
         }
     },
-    isValidEmail: email => {
+    isFilledEmail: email => {
+        if (email === '' || /^\s+$/.test(email)) {
+            return false;
+        } else {
+            return true;
+        }
+    },
+    isFormattedEmail: email => {
         return /^[^@]+@[^@.]+\.[a-z]+$/i.test(email);
     },
     isValidCCNum: ccNum => {
@@ -172,9 +179,8 @@ const validators = {
 function createListener(validator) {
     return e => {;
         const input = e.target;
-        const inputValue = input.value;
         const hint = input.nextElementSibling;
-        const valid = validator(inputValue);
+        const valid = validator(input.value);
         if (!valid) {
             hint.style.display = 'block';
         } else {
@@ -183,17 +189,31 @@ function createListener(validator) {
     }
 }
 
+function createEmailListener(filledValidator, formatValidator) {
+    return e => {;
+        const input = e.target;
+        const hint = input.nextElementSibling;
+        const filled = filledValidator(input.value);
+        const formatted = formatValidator(input.value);
+        if (filled) {
+            if (formatted) {
+                hint.style.display = 'none';
+            } else {
+                hint.textContent = 'Email address must be formatted correctly';
+                hint.style.display = 'block';
+            }
+        } else {
+            hint.textContent = 'Email address field cannot be blank';
+            hint.style.display = 'block';
+        }
+    }
+}
+
 nameInput.addEventListener('input', createListener(validators.isValidName));
-emailInput.addEventListener('input', createListener(validators.isValidEmail));
+emailInput.addEventListener('input', createEmailListener(validators.isFilledEmail, validators.isFormattedEmail));
 ccInput.addEventListener('input', createListener(validators.isValidCCNum));
 zipInput.addEventListener('input', createListener(validators.isValidZip));
 cvvInput.addEventListener('input', createListener(validators.isValidCVV));
-
-
-
-
-
-
 
 // form.addEventListener('submit', e => {
 //     e.preventDefault();
