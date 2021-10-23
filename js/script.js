@@ -144,8 +144,8 @@ const ccInput = document.querySelector('#cc-num');
 const zipInput = document.querySelector('#zip');
 const cvvInput = document.querySelector('#cvv');
 
-// Store validator functions in an object called `validators`
-const validators = {
+// Store validator functions in an object called `val`
+const val = {
     isValidName: name => {
         if (name === '' || /^\s+$/.test(name)) {
             return false;
@@ -224,24 +224,24 @@ function createEmailListener(filledValidator, formatValidator) {
 // Return true if all relevant fields are valid
 function isValidForm() {
     if (paymentSelect.value === 'credit-card') {
-        return validators.isValidName(nameInput.value) &&
-               validators.isFormattedEmail(emailInput.value) &&
-               validators.isValidCCNum(ccInput.value) &&
-               validators.isValidZip(zipInput.value) &&
-               validators.isValidCVV(cvvInput.value) &&
-               validators.isAtLeastOneActivity();
+        return val.isValidName(nameInput.value) &&
+               val.isFormattedEmail(emailInput.value) &&
+               val.isValidCCNum(ccInput.value) &&
+               val.isValidZip(zipInput.value) &&
+               val.isValidCVV(cvvInput.value) &&
+               val.isAtLeastOneActivity();
     } else {
-        return validators.isValidName(nameInput.value) &&
-               validators.isFormattedEmail(emailInput.value) &&
-               validators.isAtLeastOneActivity();
+        return val.isValidName(nameInput.value) &&
+               val.isFormattedEmail(emailInput.value) &&
+               val.isAtLeastOneActivity();
     } 
 }
 
-nameInput.addEventListener('input', createListener(validators.isValidName));
-emailInput.addEventListener('input', createEmailListener(validators.isFilledEmail, validators.isFormattedEmail));
-ccInput.addEventListener('input', createListener(validators.isValidCCNum));
-zipInput.addEventListener('input', createListener(validators.isValidZip));
-cvvInput.addEventListener('input', createListener(validators.isValidCVV));
+nameInput.addEventListener('input', createListener(val.isValidName));
+emailInput.addEventListener('input', createEmailListener(val.isFilledEmail, val.isFormattedEmail));
+ccInput.addEventListener('input', createListener(val.isValidCCNum));
+zipInput.addEventListener('input', createListener(val.isValidZip));
+cvvInput.addEventListener('input', createListener(val.isValidCVV));
 
 form.addEventListener('submit', e => {
     if (!isValidForm()) {
