@@ -3,14 +3,13 @@ Treehouse Techdegree:
 FSJS Project 3 - Interactive Form
 */ 
 
-/* 
-Set default focus state to `Name` field
-*/
 document.querySelector('#name').focus();
 
 /* 
-In `Job Role` drop down menu, display `Other job role` text field only when `Other` has been selected
-*/ 
+ *
+ * In `Job Role` drop down menu, display `Other job role` text field only when `Other` has been selected
+ *
+ */ 
 const jobRoleSelect = document.querySelector('#title');
 const otherJobInput = document.querySelector('#other-job-role');
 
@@ -24,9 +23,11 @@ jobRoleSelect.addEventListener('change', e => {
     }
 });
 
-/* 
-In `T-Shirt Info` section, enable color drop down menu only when design has been selected, and display available colors
-*/
+/*
+ * 
+ * In `T-Shirt Info` section, enable color drop down menu only when design has been selected, and display available colors
+ *
+ */
 const designSelect = document.querySelector('#design');
 const colorSelect = document.querySelector('#color');
 const colorOptions = colorSelect.children;
@@ -50,8 +51,10 @@ designSelect.addEventListener('change', e => {
 });
 
 /*
-In the `Register for Activities` section, set up `Total` to reflect the total cost of selected activities and disable conflicting activities
-*/
+ *
+ * In the `Register for Activities` section, set up `Total` to reflect the total cost of selected activities and disable conflicting activities
+ *
+ */
 const activitiesDiv = document.querySelector('#activities-box');
 const activitiesLabels = activitiesDiv.children;
 const activitiesCostP = document.querySelector('#activities-cost');
@@ -101,8 +104,10 @@ activitiesDiv.addEventListener('change', e => {
 });
 
 /*
-In `Payment Info` section, make credit card the default and display appropriate elements for the selected payment option
-*/
+ *
+ * In `Payment Info` section, make credit card the default and display appropriate elements for the selected payment option
+ *
+ */
 const paymentSelect = document.querySelector('#payment');
 const paymentOptions = paymentSelect.children;
 const creditCardOption = paymentOptions[1];
@@ -128,8 +133,10 @@ paymentSelect.addEventListener('change', e => {
 });
 
 /*
-Form validation
-*/
+ *
+ * Form validation
+ * 
+ */
 const form = document.querySelector('form');
 const nameInput = document.querySelector('#name');
 const emailInput = document.querySelector('#email');
@@ -179,9 +186,9 @@ const validators = {
     }
 };
 
-// Create a listener to display or hide an existing error message 
+// Create a listener to display or hide a real-time error message, to be used for all fields except email
 function createListener(validator) {
-    return e => {;
+    return e => {
         const input = e.target;
         const hint = input.nextElementSibling;
         const valid = validator(input.value);
@@ -193,9 +200,9 @@ function createListener(validator) {
     }
 }
 
-// Create a listener to display or hide two different error messages depending on type of error, to be used for validating email
+// Create a listener to display or hide two different real-time error messages depending on type of error, to be used for email field
 function createEmailListener(filledValidator, formatValidator) {
-    return e => {;
+    return e => {
         const input = e.target;
         const hint = input.nextElementSibling;
         const filled = filledValidator(input.value);
@@ -214,6 +221,22 @@ function createEmailListener(filledValidator, formatValidator) {
     }
 }
 
+// Return true if all relevant fields are valid
+function isValidForm() {
+    if (paymentSelect.value === 'credit-card') {
+        return validators.isValidName(nameInput.value) &&
+               validators.isFormattedEmail(emailInput.value) &&
+               validators.isValidCCNum(ccInput.value) &&
+               validators.isValidZip(zipInput.value) &&
+               validators.isValidCVV(cvvInput.value) &&
+               validators.isAtLeastOneActivity();
+    } else {
+        return validators.isValidName(nameInput.value) &&
+               validators.isFormattedEmail(emailInput.value) &&
+               validators.isAtLeastOneActivity();
+    } 
+}
+
 nameInput.addEventListener('input', createListener(validators.isValidName));
 emailInput.addEventListener('input', createEmailListener(validators.isFilledEmail, validators.isFormattedEmail));
 ccInput.addEventListener('input', createListener(validators.isValidCCNum));
@@ -221,5 +244,9 @@ zipInput.addEventListener('input', createListener(validators.isValidZip));
 cvvInput.addEventListener('input', createListener(validators.isValidCVV));
 
 form.addEventListener('submit', e => {
-    e.preventDefault();
+    if (!isValidForm()) {
+        e.preventDefault(); 
+    }
 });
+
+// TO-DO: accessibility & readme
