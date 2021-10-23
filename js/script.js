@@ -131,46 +131,65 @@ Form validation
 const form = document.querySelector('form');
 const nameInput = document.querySelector('#name');
 const emailInput = document.querySelector('#email');
-const ccNumInput = document.querySelector('#cc-num');
+const ccInput = document.querySelector('#cc-num');
 const zipInput = document.querySelector('#zip');
 const cvvInput = document.querySelector('#cvv');
 
-function isValidName(name) {
-    if (name === '' || /^\s+$/.test(name)) {
-        return false;
-    } else {
-        return true;
-    }
-}
-
-function isValidEmail(email) {
-    return /^[^@]+@[^@.]+\.[a-z]+$/i.test(email);
-}
-
-function isAtLeastOneActivity() {
-    const activitiesDiv = document.querySelector('#activities-box');
-    const activitiesLabels = activitiesDiv.children;
-    for (let i = 0; i < activitiesLabels.length; i++) {
-        let label = activitiesLabels[i];
-        let checkbox = label.firstElementChild;
-        if (checkbox.checked) {
+const validators = {
+    isValidName: name => {
+        if (name === '' || /^\s+$/.test(name)) {
+            return false;
+        } else {
             return true;
         }
+    },
+    isValidEmail: email => {
+        return /^[^@]+@[^@.]+\.[a-z]+$/i.test(email);
+    },
+    isValidCCNum: ccNum => {
+        return /^\d{13,16}$/.test(ccNum);
+    },
+    isValidZip: zip => {
+        return /^\d{5}$/.test(zip);
+    },
+    isValidCVV: cvv => {
+        return /^\d{3}$/.test(cvv);
+    },
+    isAtLeastOneActivity: () => {
+        const activitiesDiv = document.querySelector('#activities-box');
+        const activitiesLabels = activitiesDiv.children;
+        for (let i = 0; i < activitiesLabels.length; i++) {
+            let label = activitiesLabels[i];
+            let checkbox = label.firstElementChild;
+            if (checkbox.checked) {
+                return true;
+            }
     }
-    return false;
+        return false;
+    }
+};
+
+function createListener(validator) {
+    return e => {;
+        const input = e.target;
+        const inputValue = input.value;
+        const hint = input.nextElementSibling;
+        const valid = validator(inputValue);
+        if (!valid) {
+            hint.style.display = 'block';
+        } else {
+            hint.style.display = 'none';
+        }
+    }
 }
 
-function isValidCCNum(ccNum) {
-    return /^\d{13,16}$/.test(ccNum);
-}
+nameInput.addEventListener('input', createListener(validators.isValidName));
+emailInput.addEventListener('input', createListener(validators.isValidEmail));
+ccInput.addEventListener('input', createListener(validators.isValidCCNum));
+zipInput.addEventListener('input', createListener(validators.isValidZip));
+cvvInput.addEventListener('input', createListener(validators.isValidCVV));
 
-function isValidZip(zip) {
-    return /^\d{5}$/.test(zip);
-}
 
-function isValidCVV(cvv) {
-    return /^\d{3}$/.test(cvv);
-}
 
 
 
