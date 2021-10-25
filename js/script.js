@@ -52,7 +52,7 @@ designSelect.addEventListener('change', e => {
 
 /*
  *
- * In the `Register for Activities` section, set up `Total` to reflect the total cost of selected activities and disable conflicting activities
+ * In `Register for Activities` section, set up `Total` to reflect the total cost of selected activities and disable conflicting activities
  *
  */
 const activitiesDiv = document.querySelector('#activities-box');
@@ -105,7 +105,7 @@ activitiesDiv.addEventListener('change', e => {
 
 /*
  *
- * In `Payment Info` section, make credit card the default and display appropriate elements for the selected payment option
+ * In `Payment Info` section, make credit card the default option and display appropriate elements for the selected payment option
  *
  */
 const paymentSelect = document.querySelector('#payment');
