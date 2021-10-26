@@ -282,7 +282,7 @@ function isValidForm() {
     }    
 }
 
-// Checks if each field is valid using the `valsAndArgs` array, and adjusts style and hides/displays the error message
+// Checks if each field is valid using the validators array, and adjusts style and hides/displays the error message accordingly
 function changeErrorStyle() {  
     const valsAndArgs = createValidatorsArray(); 
     const hints = document.querySelectorAll('.hint');
