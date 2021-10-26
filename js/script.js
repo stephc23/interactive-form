@@ -7,7 +7,7 @@ document.querySelector('#name').focus();
 
 /* 
  *
- * In `Job Role` drop down menu, display `Other job role` text field only when `Other` has been selected
+ * In 'Job Role' drop down menu, display 'Other job role' text field only when 'Other' has been selected
  *
  */ 
 
@@ -26,7 +26,7 @@ jobRoleSelect.addEventListener('change', e => {
 
 /*
  * 
- * In `T-Shirt Info` section, enable color drop down menu only when design has been selected, and display available colors
+ * In 'T-Shirt Info' section, enable color drop down menu only when design has been selected and display available colors
  *
  */
 
@@ -54,7 +54,7 @@ designSelect.addEventListener('change', e => {
 
 /*
  *
- * In `Register for Activities` section, set up `Total` to reflect the total cost of selected activities, and disable conflicting activities
+ * In 'Register for Activities' section, calculate the total cost of selected activities and disable conflicting activities
  *
  */
 
@@ -63,12 +63,12 @@ const activitiesLabels = activitiesDiv.children;
 const activitiesCostP = document.querySelector('#activities-cost');
 
 // Return an array of checkbox inputs for activities whose time conflicts with that of the selected activity
-function findTimeConflicts(selectedCheckbox, allLabels) {
+function findTimeConflicts(selectedCheckbox, labels) {
     const selectedTime = selectedCheckbox.dataset.dayAndTime;
     const selectedName = selectedCheckbox.name;
     const conflicts = [];
-    for(let i = 0; i < allLabels.length; i++) {
-        let label = allLabels[i];
+    for(let i = 0; i < labels.length; i++) {
+        let label = labels[i];
         let checkbox = label.firstElementChild;
         let time = checkbox.dataset.dayAndTime;
         let name = checkbox.name;
@@ -80,8 +80,8 @@ function findTimeConflicts(selectedCheckbox, allLabels) {
 }
 
 // Disable or enable the checkbox and label for each conflicting activity
-function disableTimeConflicts(isDisabled, labelClass, selectedCheckbox, allLabels) {
-    const conflictCheckboxes = findTimeConflicts(selectedCheckbox, allLabels);
+function disableTimeConflicts(isDisabled, labelClass, selectedCheckbox, labels) {
+    const conflictCheckboxes = findTimeConflicts(selectedCheckbox, labels);
     for (let i = 0; i < conflictCheckboxes.length; i++) {
         let checkbox = conflictCheckboxes[i];
         let label = checkbox.parentNode;
@@ -90,7 +90,7 @@ function disableTimeConflicts(isDisabled, labelClass, selectedCheckbox, allLabel
     }
 }
 
-// When a `change` event occurs on any checkbox, adjust total cost and call `disableTimeConflicts` function
+// When a 'change' event occurs on any checkbox, adjust total cost and call `disableTimeConflicts` function
 activitiesDiv.addEventListener('change', e => {
     const checkbox = e.target;
     const checked = checkbox.checked;
@@ -107,7 +107,7 @@ activitiesDiv.addEventListener('change', e => {
     activitiesCostP.textContent = totalCostDisplay;
 });
 
-// Make the focus states of the activties more apparent by adding or removing a `focus` class
+// Make the focus states of the activties more apparent by adding or removing a 'focus' class
 function addActivityFocusState(event, labelClass) {
     activitiesDiv.addEventListener(event, e => {
         const input = e.target;
@@ -120,7 +120,7 @@ addActivityFocusState('focusout', '');
 
 /*
  *
- * In `Payment Info` section, make credit card the default option and display appropriate fields for the selected payment option
+ * In 'Payment Info' section, make credit card the default option and display appropriate fields for the selected payment option
  *
  */
 
@@ -169,7 +169,7 @@ function createIsFilled() {
 const fields = [
     {
         name: 'name',
-        input: document.querySelector('#name'),
+        element: document.querySelector('#name'),
         fillHint: 'Name field cannot be blank',
         formatHint: '',
         isFilled: createIsFilled(),
@@ -179,7 +179,7 @@ const fields = [
     },
     {
         name: 'email',
-        input: document.querySelector('#email'),
+        element: document.querySelector('#email'),
         fillHint: 'Email address field cannot be blank',
         formatHint: 'Email address must be formatted correctly',
         isFilled: createIsFilled(),
@@ -189,7 +189,7 @@ const fields = [
     }, 
     {
         name: 'activities',
-        input: document.querySelector('#activities-box'),
+        element: document.querySelector('#activities-box'),
         fillHint: 'Choose at least one activity',
         formatHint: '',
         isFilled: () => {
@@ -210,7 +210,7 @@ const fields = [
     },
     {
         name: 'cc-num',
-        input: document.querySelector('#cc-num'),
+        element: document.querySelector('#cc-num'),
         fillHint: 'Card number field cannot be blank',
         formatHint: 'Credit card number must be between 13 - 16 digits',
         isFilled: createIsFilled(),
@@ -220,7 +220,7 @@ const fields = [
     },
     {
         name: 'zip',
-        input: document.querySelector('#zip'),
+        element: document.querySelector('#zip'),
         fillHint: 'Zip code field cannot be blank',
         formatHint: 'Zip Code must be 5 digits',
         isFilled: createIsFilled(),
@@ -230,7 +230,7 @@ const fields = [
     }, 
     {
         name: 'cvv',
-        input: document.querySelector('#cvv'),
+        element: document.querySelector('#cvv'),
         fillHint: 'CVV field cannot be blank',
         formatHint: 'CVV must be 3 digits',
         isFilled: createIsFilled(),
@@ -266,8 +266,8 @@ function createListener(index, filledValidator, formattedValidator, fillHint, fo
 function addListeners() {
     for (let i = 0; i < fields.length; i++) {
         let field = fields[i];
-        let input = field.input;
-        input.addEventListener('input', createListener(i, field.isFilled, field.isFormatted, field.fillHint, field.formatHint));
+        let element = field.element;
+        element.addEventListener('input', createListener(i, field.isFilled, field.isFormatted, field.fillHint, field.formatHint));
     }
 }
 addListeners();
@@ -287,7 +287,7 @@ function createValidatorsArray() {
     for (let i = 0; i < fields.length; i++) {
         let field = fields[i];
         let name = field.name;
-        let input = field.input;
+        let input = field.element;
         if (name === 'name') {  
             validator = [field.isFilled, input.value];
         } else if (name === 'activities') { 
