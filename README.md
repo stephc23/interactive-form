@@ -4,7 +4,7 @@
 ## Features
 
 #### Real-time error message
-* The program validates user input in real time as the user interacts with the field.
+* The program validates user input in real time as the user interacts with a field.
 * This is achieved by adding an event listener to each input element, or, in the case of activities, to the 'activities-box' div.
 * An error message is displayed or hidden when the 'input' event occurs.
 * Real-time error messages are provided for the name, email, activities, card number, zip code, and cvv fields.
