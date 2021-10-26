@@ -286,10 +286,11 @@ function createValidatorsArray() {
     let validator;
     for (let i = 0; i < fields.length; i++) {
         let field = fields[i];
+        let name = field.name;
         let input = field.input;
-        if (i === 0) {  // if the field is the name field
+        if (name === 'name') {  
             validator = [field.isFilled, input.value];
-        } else if (i === 2) {  // if the field is the activities field
+        } else if (name === 'activities') { 
             validator = [field.isFilled, undefined];
         } else {
             validator = [field.isFormatted, input.value];
@@ -298,6 +299,10 @@ function createValidatorsArray() {
     }
     return validatorsArray;
 }
+
+// function isValidField(arr, index) {
+
+// }
 
 // Return true if all input values in a selected portion of the validators array are valid
 function isValidPortion(indexStart, indexEnd) {
