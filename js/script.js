@@ -318,7 +318,7 @@ function isValidFormPortion(array, indexStart, indexEnd) {
     return true;
 }
 
-// Return true if all relevant fields for the selected payment option are valid
+// Return true if all fields before the payment section and all relevant payment fields are valid
 function isValidForm(array) {
     const isValidBeforeCardInfo = isValidFormPortion(array, 0, 3);
     const isValidCardInfo = isValidFormPortion(array, 3, 6);
@@ -343,7 +343,7 @@ function showErrorStyle(hintSpan, hintParent) {
     hintSpan.style.display = 'block';
 }
 
-// Check if each field in a selected portion of the form is valid and show/hide its error style accordingly
+// Show or hide the error style of each field in a selected portion of the form, depending on validity
 function setSomeErrorStyles(array, indexStart, indexEnd) {   
     const hints = document.querySelectorAll('.hint');
     for (let i = indexStart; i < indexEnd; i++) {
@@ -358,7 +358,7 @@ function setSomeErrorStyles(array, indexStart, indexEnd) {
     }
 }
 
-// Set error styles for all relevant fields, depending on selected payment option
+// Set appropriate error styles for all fields before the payment section and all relevant payment fields
 function setAllErrorStyles(array) {
     if (paymentSelect.value === 'credit-card') {
         setSomeErrorStyles(array, 0, 6);
