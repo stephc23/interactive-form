@@ -15,4 +15,4 @@
     * If a field is filled but formatted incorrectly, the error message references the required format.
 * Two validators are created for each field, one checking that it's not blank and another checking that it's formatted correctly.
 * The listener function returned by createListener checks input values using these validators and uses the results as conditions in a conditional statement.
-* Conditional error messages are provided for the name, email, card number, zip code, and cvv fields. 
+* Conditional error messages are provided for the email, card number, zip code, and cvv fields. 
