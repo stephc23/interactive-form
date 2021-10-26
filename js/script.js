@@ -154,7 +154,7 @@ paymentSelect.addEventListener('change', e => {
  * 
  */
 
-// Return a function that checks if an input value is filled (not an empty string or a series of spaces)
+// Return a function that checks if an input value is filled, not an empty string or a series of spaces
 function createIsFilled() {
     return function(inputValue) {
         if (inputValue === '' || /^\s+$/.test(inputValue)) {
@@ -280,7 +280,7 @@ addListeners();
 
 const form = document.querySelector('form');
 
-// Get the appropriate validator and the input for each field from the `fields` array, and store them in a separate, two-dimensional array
+// Get the appropriate validator and input value for each field from the `fields` array, and store them in a separate, two-dimensional array
 function createValidatorsArray() { 
     const validatorsArray = [];
     let validator;
@@ -300,18 +300,18 @@ function createValidatorsArray() {
     return validatorsArray;
 }
 
-// function isValidField(arr, index) {
+// Return true if an individual field is valid; `array` refers to the array that will be created when `createValidatorsArray` is called
+function isValidField(array, index) {
+    let validator = array[index][0];
+    let inputValue = array[index][1];
+    return validator(inputValue);
+}
 
-// }
-
-// Return true if all input values in a selected portion of the validators array are valid
-function isValidPortion(indexStart, indexEnd) {
-    const validators = createValidatorsArray();
+// Return true if all fields in a selected portion of the form are valid
+function isValidFormPortion(array, indexStart, indexEnd) {
     for (let i = indexStart; i < indexEnd; i++) {
-        let validator = validators[i][0];
-        let inputValue = validators[i][1];
-        let isValidField = validator(inputValue);
-        if (!isValidField) {
+        let isValid = isValidField(array, i);
+        if (!isValid) {
             return false;
         }
     }
@@ -319,9 +319,9 @@ function isValidPortion(indexStart, indexEnd) {
 }
 
 // Return true if all relevant fields for the selected payment option are valid
-function isValidForm() {
-    const isValidBeforeCardInfo = isValidPortion(0, 3);
-    const isValidCardInfo = isValidPortion(3, 6);
+function isValidForm(array) {
+    const isValidBeforeCardInfo = isValidFormPortion(array, 0, 3);
+    const isValidCardInfo = isValidFormPortion(array, 3, 6);
     if (paymentSelect.value === 'credit-card') {
         return isValidBeforeCardInfo && isValidCardInfo;
     } else {
@@ -329,31 +329,49 @@ function isValidForm() {
     }    
 }
 
-// Loop through the validators array, check if each field is valid, and adjust style and hide/display error message accordingly
-function setErrorStyle() {  
-    const validators = createValidatorsArray(); 
+// Hide a hint span and remove error style from its parent
+function hideErrorStyle(hintSpan, hintParent) {
+    hintParent.classList.add('valid');
+    hintParent.classList.remove('not-valid');
+    hintSpan.style.display = 'none';
+}
+
+// Show a hint span and add error style to its parent
+function showErrorStyle(hintSpan, hintParent) {
+    hintParent.classList.add('not-valid');
+    hintParent.classList.remove('valid');
+    hintSpan.style.display = 'block';
+}
+
+// Check if each field in a selected portion of the form is valid and show/hide its error style accordingly
+function setSomeErrorStyles(array, indexStart, indexEnd) {   
     const hints = document.querySelectorAll('.hint');
-    for (let i = 0; i < validators.length; i++) {
-        let validator = validators[i][0];
-        let inputValue = validators[i][1];
+    for (let i = indexStart; i < indexEnd; i++) {
         let hint = hints[i];
         let parent = hint.parentNode;
-        let isValidField = validator(inputValue);
-        if (isValidField) {
-            parent.classList.add('valid');
-            parent.classList.remove('not-valid');
-            hint.style.display = 'none';
+        let isValid = isValidField(array, i);
+        if (isValid) {
+            hideErrorStyle(hint, parent);
         } else {
-            parent.classList.add('not-valid');
-            parent.classList.remove('valid');
-            hint.style.display = 'block';
+            showErrorStyle(hint, parent);
         }      
     }
 }
 
+// Set error styles for all relevant fields of the selected payment option
+function setAllErrorStyles(array) {
+    if (paymentSelect.value === 'credit-card') {
+        setSomeErrorStyles(array, 0, 6);
+    } else {
+        setSomeErrorStyles(array, 0, 3);
+    }
+}
+
 form.addEventListener('submit', e => {
-    if (!isValidForm()) {
+    const validators = createValidatorsArray();
+    const isValid = isValidForm(validators);
+    if (!isValid) {
         e.preventDefault(); 
-        setErrorStyle();
+        setAllErrorStyles(validators);
     }
 });
