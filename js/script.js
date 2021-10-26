@@ -10,6 +10,7 @@ document.querySelector('#name').focus();
  * In `Job Role` drop down menu, displays `Other job role` text field only when `Other` has been selected
  *
  */ 
+
 const jobRoleSelect = document.querySelector('#title');
 const otherJobInput = document.querySelector('#other-job-role');
 
@@ -28,6 +29,7 @@ jobRoleSelect.addEventListener('change', e => {
  * In `T-Shirt Info` section, enables color drop down menu only when design has been selected, and displays available colors
  *
  */
+
 const designSelect = document.querySelector('#design');
 const colorSelect = document.querySelector('#color');
 const colorOptions = colorSelect.children;
@@ -55,6 +57,7 @@ designSelect.addEventListener('change', e => {
  * In `Register for Activities` section, sets up `Total` to reflect the total cost of selected activities and disable conflicting activities
  *
  */
+
 const activitiesDiv = document.querySelector('#activities-box');
 const activitiesLabels = activitiesDiv.children;
 const activitiesCostP = document.querySelector('#activities-cost');
@@ -120,6 +123,7 @@ addActivityFocusState('focusout', '');
  * In `Payment Info` section, makes credit card the default option and displays appropriate elements for the selected payment option
  *
  */
+
 const paymentSelect = document.querySelector('#payment');
 const paymentOptions = paymentSelect.children;
 const creditCardOption = paymentOptions[1];
@@ -149,95 +153,119 @@ paymentSelect.addEventListener('change', e => {
  * Form validation: real-time error messages
  * 
  */
-const form = document.querySelector('form');
-const nameInput = document.querySelector('#name');
-const emailInput = document.querySelector('#email');
-const ccInput = document.querySelector('#cc-num');
-const zipInput = document.querySelector('#zip');
-const cvvInput = document.querySelector('#cvv');
 
-// Stores validator functions in an object called `val`
-const val = {
-    isValidName: name => {
-        if (name === '' || /^\s+$/.test(name)) {
+// Returns true if an input value is not an empty string or a series of spaces
+function createIsFilled() {
+    return function(inputValue) {
+        if (inputValue === '' || /^\s+$/.test(inputValue)) {
             return false;
         } else {
             return true;
-        }
-    },
-    isFilledEmail: email => {
-        if (email === '' || /^\s+$/.test(email)) {
-            return false;
-        } else {
-            return true;
-        }
-    },
-    isFormattedEmail: email => {
-        return /^[^@]+@[^@.]+\.[a-z]+$/i.test(email);
-    },
-    isValidCCNum: ccNum => {
-        return /^\d{13,16}$/.test(ccNum);
-    },
-    isValidZip: zip => {
-        return /^\d{5}$/.test(zip);
-    },
-    isValidCVV: cvv => {
-        return /^\d{3}$/.test(cvv);
-    },
-    isAtLeastOneActivity: () => {
-        const activitiesDiv = document.querySelector('#activities-box');
-        const activitiesLabels = activitiesDiv.children;
-        for (let i = 0; i < activitiesLabels.length; i++) {
-            let label = activitiesLabels[i];
-            let checkbox = label.firstElementChild;
-            if (checkbox.checked) {
-                return true;
-            }
-    }
-        return false;
-    }
-};
-
-// Creates a listener to display or hide a real-time error message, to be used for all fields except email
-function createListener(validator) {
-    return e => {
-        const input = e.target;
-        const hint = input.nextElementSibling;
-        const valid = validator(input.value);
-        if (!valid) {
-            hint.style.display = 'block';
-        } else {
-            hint.style.display = 'none';
         }
     }
 }
 
-// Creates a listener to display or hide two different real-time error messages depending on type of error, to be used for email field
-function createEmailListener(filledValidator, formatValidator) {
+// Stores input element, conditional error messages, and validator functions for each field in an array of objects called `fields`
+const fields = [
+    {
+        input: document.querySelector('#name'),
+        fillHint: 'Name field cannot be blank',
+        formatHint: '',
+        isFilled: createIsFilled(),
+        isFormatted: () => {
+            return true;
+        }
+    },
+    {
+        input: document.querySelector('#email'),
+        fillHint: 'Email address field cannot be blank',
+        formatHint: 'Email address must be formatted correctly',
+        isFilled: createIsFilled(),
+        isFormatted: email => {
+            return /^[^@]+@[^@.]+\.[a-z]+$/i.test(email);
+        }
+    }, 
+    {
+        input: document.querySelector('#activities-box'),
+        fillHint: 'Choose at least one activity',
+        formatHint: '',
+        isFilled: () => {
+            const activitiesDiv = document.querySelector('#activities-box');
+            const activitiesLabels = activitiesDiv.children;
+            for (let i = 0; i < activitiesLabels.length; i++) {
+                let label = activitiesLabels[i];
+                let checkbox = label.firstElementChild;
+                if (checkbox.checked) {
+                    return true;
+                }
+            }
+            return false;
+        },
+        isFormatted: () => {
+            return true;
+        }
+    },
+    {
+        input: document.querySelector('#cc-num'),
+        fillHint: 'Card number field cannot be blank',
+        formatHint: 'Credit card number must be between 13 - 16 digits',
+        isFilled: createIsFilled(),
+        isFormatted: ccNum => {
+            return /^\d{13,16}$/.test(ccNum); 
+        }
+    },
+    {
+        input: document.querySelector('#zip'),
+        fillHint: 'Zip code field cannot be blank',
+        formatHint: 'Zip Code must be 5 digits',
+        isFilled: createIsFilled(),
+        isFormatted: zip => {
+            return /^\d{5}$/.test(zip);
+        }
+    }, 
+    {
+        input: document.querySelector('#cvv'),
+        fillHint: 'CVV field cannot be blank',
+        formatHint: 'CVV must be 3 digits',
+        isFilled: createIsFilled(),
+        isFormatted: cvv => {
+            return /^\d{3}$/.test(cvv);
+        },
+    }
+];
+
+// Creates a listener to display or hide two different real-time error messages depending on type of error
+function createListener(index, filledValidator, formattedValidator, fillHint, formatHint) {
     return e => {
         const input = e.target;
-        const hint = input.nextElementSibling;
-        const filled = filledValidator(input.value);
-        const formatted = formatValidator(input.value);
-        if (filled) {
-            if (formatted) {
+        const hints = document.querySelectorAll('.hint');
+        const hint = hints[index];
+        const isFilled = filledValidator(input.value);
+        const isFormatted = formattedValidator(input.value);
+        if (isFilled) {
+            if (isFormatted) {
                 hint.style.display = 'none';
             } else {
-                hint.textContent = 'Email address must be formatted correctly';
+                hint.textContent = formatHint;
                 hint.style.display = 'block';
             }
         } else {
-            hint.textContent = 'Email address field cannot be blank';
+            hint.textContent = fillHint;
             hint.style.display = 'block';
         }
     }
 }
 
-nameInput.addEventListener('input', createListener(val.isValidName));
-emailInput.addEventListener('input', createEmailListener(val.isFilledEmail, val.isFormattedEmail));
-ccInput.addEventListener('input', createListener(val.isValidCCNum));
-zipInput.addEventListener('input', createListener(val.isValidZip));
-cvvInput.addEventListener('input', createListener(val.isValidCVV));
+// Loops through the objects of the `fields` array, adding an event listener to each input element by calling `createListener`
+function addListeners() {
+    for (let i = 0; i < fields.length; i++) {
+        let field = fields[i];
+        let input = field.input;
+        input.addEventListener('input', createListener(i, field.isFilled, field.isFormatted, field.fillHint, field.formatHint));
+    }
+}
+
+addListeners();
 
 /*
  *
@@ -245,16 +273,25 @@ cvvInput.addEventListener('input', createListener(val.isValidCVV));
  * 
  */
 
+const form = document.querySelector('form');
+
 // Creates a multidimensional array that holds each validator function and an input value
 function createValidatorsArray() { 
-    return [
-        [val.isValidName, nameInput.value],
-        [val.isFormattedEmail, emailInput.value],
-        [val.isAtLeastOneActivity, undefined],
-        [val.isValidCCNum, ccInput.value],
-        [val.isValidZip, zipInput.value],
-        [val.isValidCVV, cvvInput.value] 
-    ];
+    const validatorsArray = [];
+    let valAndArg;
+    for (let i = 0; i < fields.length; i++) {
+        let field = fields[i];
+        let input = field.input;
+        if (i === 0) {
+            valAndArg = [field.isFilled, input.value];
+        } else if (i === 2) {
+            valAndArg = [field.isFilled, undefined];
+        } else {
+            valAndArg = [field.isFormatted, input.value];
+        }
+        validatorsArray.push(valAndArg);
+    }
+    return validatorsArray;
 }
 
 // Returns true if a selection of validators from the array all return true
