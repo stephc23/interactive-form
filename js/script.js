@@ -7,7 +7,7 @@ document.querySelector('#name').focus();
 
 /* 
  *
- * In `Job Role` drop down menu, display `Other job role` text field only when `Other` has been selected
+ * In `Job Role` drop down menu, displays `Other job role` text field only when `Other` has been selected
  *
  */ 
 const jobRoleSelect = document.querySelector('#title');
@@ -25,7 +25,7 @@ jobRoleSelect.addEventListener('change', e => {
 
 /*
  * 
- * In `T-Shirt Info` section, enable color drop down menu only when design has been selected, and display available colors
+ * In `T-Shirt Info` section, enables color drop down menu only when design has been selected, and displays available colors
  *
  */
 const designSelect = document.querySelector('#design');
@@ -52,14 +52,14 @@ designSelect.addEventListener('change', e => {
 
 /*
  *
- * In `Register for Activities` section, set up `Total` to reflect the total cost of selected activities and disable conflicting activities
+ * In `Register for Activities` section, sets up `Total` to reflect the total cost of selected activities and disable conflicting activities
  *
  */
 const activitiesDiv = document.querySelector('#activities-box');
 const activitiesLabels = activitiesDiv.children;
 const activitiesCostP = document.querySelector('#activities-cost');
 
-// Return an array of checkbox input elements for activities whose time conflicts with that of the selected activity
+// Returns an array of checkbox inputs for activities whose time conflicts with that of the selected activity
 function findTimeConflicts(selectedCheckbox, allLabels) {
     const selectedTime = selectedCheckbox.dataset.dayAndTime;
     const selectedName = selectedCheckbox.name;
@@ -76,7 +76,7 @@ function findTimeConflicts(selectedCheckbox, allLabels) {
     return conflicts;
 }
 
-// For each conflicting activity, disable or enable checkbox and label depending on arguments passed
+// Disables or enables the checkbox and label for each conflicting activity
 function disableTimeConflicts(isDisabled, labelClass, selectedCheckbox, allLabels) {
     const conflictCheckboxes = findTimeConflicts(selectedCheckbox, allLabels);
     for (let i = 0; i < conflictCheckboxes.length; i++) {
@@ -87,6 +87,7 @@ function disableTimeConflicts(isDisabled, labelClass, selectedCheckbox, allLabel
     }
 }
 
+// When a `change` event occurs on any checkbox, adjusts total cost and calls `disableTimeConflicts` function
 activitiesDiv.addEventListener('change', e => {
     const checkbox = e.target;
     const checked = checkbox.checked;
@@ -103,9 +104,20 @@ activitiesDiv.addEventListener('change', e => {
     activitiesCostP.textContent = totalCostDisplay;
 });
 
+// Makes the focus states of the activties more apparent by adding or removing a `focus` class
+function addActivityFocusState(event, labelClass) {
+    activitiesDiv.addEventListener(event, e => {
+        const input = e.target;
+        const label = input.parentNode;
+        label.className = labelClass;
+    });
+}
+addActivityFocusState('focusin', 'focus');
+addActivityFocusState('focusout', '');
+
 /*
  *
- * In `Payment Info` section, make credit card the default option and display appropriate elements for the selected payment option
+ * In `Payment Info` section, makes credit card the default option and displays appropriate elements for the selected payment option
  *
  */
 const paymentSelect = document.querySelector('#payment');
@@ -134,7 +146,7 @@ paymentSelect.addEventListener('change', e => {
 
 /*
  *
- * Form validation
+ * Form validation: real-time error messages
  * 
  */
 const form = document.querySelector('form');
@@ -144,7 +156,7 @@ const ccInput = document.querySelector('#cc-num');
 const zipInput = document.querySelector('#zip');
 const cvvInput = document.querySelector('#cvv');
 
-// Store validator functions in an object called `val`
+// Stores validator functions in an object called `val`
 const val = {
     isValidName: name => {
         if (name === '' || /^\s+$/.test(name)) {
@@ -186,7 +198,7 @@ const val = {
     }
 };
 
-// Create a listener to display or hide a real-time error message, to be used for all fields except email
+// Creates a listener to display or hide a real-time error message, to be used for all fields except email
 function createListener(validator) {
     return e => {
         const input = e.target;
@@ -200,7 +212,7 @@ function createListener(validator) {
     }
 }
 
-// Create a listener to display or hide two different real-time error messages depending on type of error, to be used for email field
+// Creates a listener to display or hide two different real-time error messages depending on type of error, to be used for email field
 function createEmailListener(filledValidator, formatValidator) {
     return e => {
         const input = e.target;
@@ -221,16 +233,48 @@ function createEmailListener(filledValidator, formatValidator) {
     }
 }
 
-// Return true if all relevant fields are valid
+nameInput.addEventListener('input', createListener(val.isValidName));
+emailInput.addEventListener('input', createEmailListener(val.isFilledEmail, val.isFormattedEmail));
+ccInput.addEventListener('input', createListener(val.isValidCCNum));
+zipInput.addEventListener('input', createListener(val.isValidZip));
+cvvInput.addEventListener('input', createListener(val.isValidCVV));
+
+/*
+ *
+ * Form validation: form submission
+ * 
+ */
+
+// Creates a multidimensional array that holds each validator function and an input value
+function createValidatorsArray() { 
+    return [
+        [val.isValidName, nameInput.value],
+        [val.isFormattedEmail, emailInput.value],
+        [val.isAtLeastOneActivity, undefined],
+        [val.isValidCCNum, ccInput.value],
+        [val.isValidZip, zipInput.value],
+        [val.isValidCVV, cvvInput.value] 
+    ];
+}
+
+// Returns true if a selection of validators from the array all return true
+function isValidPortion(indexStart, indexEnd) {
+    const valsAndArgs = createValidatorsArray();
+    for (let i = indexStart; i < indexEnd; i++) {
+        let validator = valsAndArgs[i][0];
+        let argument = valsAndArgs[i][1];
+        let isValid = validator(argument);
+        if (!isValid) {
+            return false;
+        }
+    }
+    return true
+}
+
+// Returns true if all relevant fields for the selected payment option are valid
 function isValidForm() {
-    const isValidBeforeCardInfo = 
-        val.isValidName(nameInput.value) && 
-        val.isFormattedEmail(emailInput.value) && 
-        val.isAtLeastOneActivity();
-    const isValidCardInfo = 
-        val.isValidCCNum(ccInput.value) &&
-        val.isValidZip(zipInput.value) &&
-        val.isValidCVV(cvvInput.value);
+    const isValidBeforeCardInfo = isValidPortion(0, 3);
+    const isValidCardInfo = isValidPortion(3, 6);
     if (paymentSelect.value === 'credit-card') {
         return isValidBeforeCardInfo && isValidCardInfo;
     } else {
@@ -238,16 +282,31 @@ function isValidForm() {
     }    
 }
 
-nameInput.addEventListener('input', createListener(val.isValidName));
-emailInput.addEventListener('input', createEmailListener(val.isFilledEmail, val.isFormattedEmail));
-ccInput.addEventListener('input', createListener(val.isValidCCNum));
-zipInput.addEventListener('input', createListener(val.isValidZip));
-cvvInput.addEventListener('input', createListener(val.isValidCVV));
+// Checks if each field is valid using the `valsAndArgs` array, and adjusts style and hides/displays the error message
+function changeErrorStyle() {  
+    const valsAndArgs = createValidatorsArray(); 
+    const hints = document.querySelectorAll('.hint');
+    for (let i = 0; i < valsAndArgs.length; i++) {
+        let validator = valsAndArgs[i][0];
+        let argument = valsAndArgs[i][1];
+        let hint = hints[i];
+        let parent = hint.parentNode;
+        let isValidField = validator(argument);
+        if (isValidField) {
+            parent.classList.add('valid');
+            parent.classList.remove('not-valid');
+            hint.style.display = 'none';
+        } else {
+            parent.classList.add('not-valid');
+            parent.classList.remove('valid');
+            hint.style.display = 'block';
+        }      
+    }
+}
 
 form.addEventListener('submit', e => {
     if (!isValidForm()) {
         e.preventDefault(); 
+        changeErrorStyle();
     }
 });
-
-// TO-DO: accessibility & readme
