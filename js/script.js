@@ -282,7 +282,7 @@ const form = document.querySelector('form');
 
 // Get the appropriate validator and input value for each field from the `fields` array, and store them in a separate, two-dimensional array
 function createValidatorsArray() { 
-    const validatorsArray = [];
+    const validators = [];
     let validator;
     for (let i = 0; i < fields.length; i++) {
         let field = fields[i];
@@ -295,9 +295,9 @@ function createValidatorsArray() {
         } else {
             validator = [field.isFormatted, input.value];
         }
-        validatorsArray.push(validator);
+        validators.push(validator);
     }
-    return validatorsArray;
+    return validators;
 }
 
 // Return true if an individual field is valid; `array` refers to the array that will be created when `createValidatorsArray` is called
@@ -358,7 +358,7 @@ function setSomeErrorStyles(array, indexStart, indexEnd) {
     }
 }
 
-// Set error styles for all relevant fields of the selected payment option
+// Set error styles for all relevant fields, depending on selected payment option
 function setAllErrorStyles(array) {
     if (paymentSelect.value === 'credit-card') {
         setSomeErrorStyles(array, 0, 6);
