@@ -7,7 +7,7 @@ document.querySelector('#name').focus();
 
 /* 
  *
- * In `Job Role` drop down menu, displays `Other job role` text field only when `Other` has been selected
+ * In `Job Role` drop down menu, display `Other job role` text field only when `Other` has been selected
  *
  */ 
 
@@ -26,7 +26,7 @@ jobRoleSelect.addEventListener('change', e => {
 
 /*
  * 
- * In `T-Shirt Info` section, enables color drop down menu only when design has been selected, and displays available colors
+ * In `T-Shirt Info` section, enable color drop down menu only when design has been selected, and display available colors
  *
  */
 
@@ -54,7 +54,7 @@ designSelect.addEventListener('change', e => {
 
 /*
  *
- * In `Register for Activities` section, sets up `Total` to reflect the total cost of selected activities and disable conflicting activities
+ * In `Register for Activities` section, set up `Total` to reflect the total cost of selected activities, and disable conflicting activities
  *
  */
 
@@ -62,7 +62,7 @@ const activitiesDiv = document.querySelector('#activities-box');
 const activitiesLabels = activitiesDiv.children;
 const activitiesCostP = document.querySelector('#activities-cost');
 
-// Returns an array of checkbox inputs for activities whose time conflicts with that of the selected activity
+// Return an array of checkbox inputs for activities whose time conflicts with that of the selected activity
 function findTimeConflicts(selectedCheckbox, allLabels) {
     const selectedTime = selectedCheckbox.dataset.dayAndTime;
     const selectedName = selectedCheckbox.name;
@@ -79,7 +79,7 @@ function findTimeConflicts(selectedCheckbox, allLabels) {
     return conflicts;
 }
 
-// Disables or enables the checkbox and label for each conflicting activity
+// Disable or enable the checkbox and label for each conflicting activity
 function disableTimeConflicts(isDisabled, labelClass, selectedCheckbox, allLabels) {
     const conflictCheckboxes = findTimeConflicts(selectedCheckbox, allLabels);
     for (let i = 0; i < conflictCheckboxes.length; i++) {
@@ -90,7 +90,7 @@ function disableTimeConflicts(isDisabled, labelClass, selectedCheckbox, allLabel
     }
 }
 
-// When a `change` event occurs on any checkbox, adjusts total cost and calls `disableTimeConflicts` function
+// When a `change` event occurs on any checkbox, adjust total cost and call `disableTimeConflicts` function
 activitiesDiv.addEventListener('change', e => {
     const checkbox = e.target;
     const checked = checkbox.checked;
@@ -107,7 +107,7 @@ activitiesDiv.addEventListener('change', e => {
     activitiesCostP.textContent = totalCostDisplay;
 });
 
-// Makes the focus states of the activties more apparent by adding or removing a `focus` class
+// Make the focus states of the activties more apparent by adding or removing a `focus` class
 function addActivityFocusState(event, labelClass) {
     activitiesDiv.addEventListener(event, e => {
         const input = e.target;
@@ -120,7 +120,7 @@ addActivityFocusState('focusout', '');
 
 /*
  *
- * In `Payment Info` section, makes credit card the default option and displays appropriate elements for the selected payment option
+ * In `Payment Info` section, make credit card the default option and display appropriate fields for the selected payment option
  *
  */
 
@@ -130,15 +130,15 @@ const creditCardOption = paymentOptions[1];
 const creditCardDiv = document.querySelector('#credit-card');
 const paypalDiv = document.querySelector('#paypal');
 const bitcoinDiv = document.querySelector('#bitcoin');
+const paymentArray = [creditCardDiv, paypalDiv, bitcoinDiv];
 
 creditCardOption.selected = true;
 paypalDiv.style.display = 'none';
 bitcoinDiv.style.display = 'none';
 paymentSelect.addEventListener('change', e => {
     const selectedOption = e.target.value;
-    const divsArray = [creditCardDiv, paypalDiv, bitcoinDiv];
-    for (let i = 0; i < divsArray.length; i++) {
-        let paymentDiv = divsArray[i];
+    for (let i = 0; i < paymentArray.length; i++) {
+        let paymentDiv = paymentArray[i];
         let payment = paymentDiv.className;
         if (payment === selectedOption) {
             paymentDiv.style.display = 'block';
@@ -154,7 +154,7 @@ paymentSelect.addEventListener('change', e => {
  * 
  */
 
-// Returns true if an input value is not an empty string or a series of spaces
+// Return a function that checks if an input value is filled (not an empty string or a series of spaces)
 function createIsFilled() {
     return function(inputValue) {
         if (inputValue === '' || /^\s+$/.test(inputValue)) {
@@ -165,7 +165,7 @@ function createIsFilled() {
     }
 }
 
-// Stores input element, conditional error messages, and validator functions for each field in an array of objects called `fields`
+// Store input element, conditional error messages, and validator functions for each field in an array of objects called `fields`
 const fields = [
     {
         input: document.querySelector('#name'),
@@ -234,7 +234,7 @@ const fields = [
     }
 ];
 
-// Creates a listener to display or hide two different real-time error messages depending on type of error
+// Create a listener to display or hide a different real-time error message depending on type of error
 function createListener(index, filledValidator, formattedValidator, fillHint, formatHint) {
     return e => {
         const input = e.target;
@@ -256,7 +256,7 @@ function createListener(index, filledValidator, formattedValidator, fillHint, fo
     }
 }
 
-// Loops through the objects of the `fields` array, adding an event listener to each input element by calling `createListener`
+// Loop through the objects of the `fields` array, adding an event listener to each input element by calling `createListener`
 function addListeners() {
     for (let i = 0; i < fields.length; i++) {
         let field = fields[i];
@@ -275,40 +275,40 @@ addListeners();
 
 const form = document.querySelector('form');
 
-// Creates a multidimensional array that holds each validator function and an input value
+// Get the appropriate validator and the input for each field from the `fields` array, and store them in a separate, two-dimensional array
 function createValidatorsArray() { 
     const validatorsArray = [];
-    let valAndArg;
+    let validator;
     for (let i = 0; i < fields.length; i++) {
         let field = fields[i];
         let input = field.input;
-        if (i === 0) {
-            valAndArg = [field.isFilled, input.value];
-        } else if (i === 2) {
-            valAndArg = [field.isFilled, undefined];
+        if (i === 0) {  // if the field is the name field
+            validator = [field.isFilled, input.value];
+        } else if (i === 2) {  // if the field is the activities field
+            validator = [field.isFilled, undefined];
         } else {
-            valAndArg = [field.isFormatted, input.value];
+            validator = [field.isFormatted, input.value];
         }
-        validatorsArray.push(valAndArg);
+        validatorsArray.push(validator);
     }
     return validatorsArray;
 }
 
-// Returns true if a selection of validators from the array all return true
+// Return true if all fields in a selected portion of the validators array are valid
 function isValidPortion(indexStart, indexEnd) {
-    const valsAndArgs = createValidatorsArray();
+    const validators = createValidatorsArray();
     for (let i = indexStart; i < indexEnd; i++) {
-        let validator = valsAndArgs[i][0];
-        let argument = valsAndArgs[i][1];
-        let isValid = validator(argument);
-        if (!isValid) {
+        let validator = validators[i][0];
+        let inputValue = validators[i][1];
+        let isValidField = validator(inputValue);
+        if (!isValidField) {
             return false;
         }
     }
-    return true
+    return true;
 }
 
-// Returns true if all relevant fields for the selected payment option are valid
+// Return true if all relevant fields for the selected payment option are valid
 function isValidForm() {
     const isValidBeforeCardInfo = isValidPortion(0, 3);
     const isValidCardInfo = isValidPortion(3, 6);
@@ -319,16 +319,16 @@ function isValidForm() {
     }    
 }
 
-// Checks if each field is valid using the validators array, and adjusts style and hides/displays the error message accordingly
+// Check if each field is valid using the validators array, and adjust style and hide/display the error message accordingly
 function changeErrorStyle() {  
-    const valsAndArgs = createValidatorsArray(); 
+    const validators = createValidatorsArray(); 
     const hints = document.querySelectorAll('.hint');
-    for (let i = 0; i < valsAndArgs.length; i++) {
-        let validator = valsAndArgs[i][0];
-        let argument = valsAndArgs[i][1];
+    for (let i = 0; i < validators.length; i++) {
+        let validator = validators[i][0];
+        let inputValue = validators[i][1];
         let hint = hints[i];
         let parent = hint.parentNode;
-        let isValidField = validator(argument);
+        let isValidField = validator(inputValue);
         if (isValidField) {
             parent.classList.add('valid');
             parent.classList.remove('not-valid');
