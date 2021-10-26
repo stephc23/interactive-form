@@ -264,7 +264,6 @@ function addListeners() {
         input.addEventListener('input', createListener(i, field.isFilled, field.isFormatted, field.fillHint, field.formatHint));
     }
 }
-
 addListeners();
 
 /*
@@ -294,7 +293,7 @@ function createValidatorsArray() {
     return validatorsArray;
 }
 
-// Return true if all fields in a selected portion of the validators array are valid
+// Return true if all input values in a selected portion of the validators array are valid
 function isValidPortion(indexStart, indexEnd) {
     const validators = createValidatorsArray();
     for (let i = indexStart; i < indexEnd; i++) {
@@ -319,8 +318,8 @@ function isValidForm() {
     }    
 }
 
-// Check if each field is valid using the validators array, and adjust style and hide/display the error message accordingly
-function changeErrorStyle() {  
+// Loop through the validators array, check if each field is valid, and adjust style and hide/display error message accordingly
+function setErrorStyle() {  
     const validators = createValidatorsArray(); 
     const hints = document.querySelectorAll('.hint');
     for (let i = 0; i < validators.length; i++) {
@@ -344,6 +343,6 @@ function changeErrorStyle() {
 form.addEventListener('submit', e => {
     if (!isValidForm()) {
         e.preventDefault(); 
-        changeErrorStyle();
+        setErrorStyle();
     }
 });
