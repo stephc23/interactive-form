@@ -168,6 +168,7 @@ function createIsFilled() {
 // Store input element, conditional error messages, and validator functions for each field in an array of objects called `fields`
 const fields = [
     {
+        name: 'name',
         input: document.querySelector('#name'),
         fillHint: 'Name field cannot be blank',
         formatHint: '',
@@ -177,6 +178,7 @@ const fields = [
         }
     },
     {
+        name: 'email',
         input: document.querySelector('#email'),
         fillHint: 'Email address field cannot be blank',
         formatHint: 'Email address must be formatted correctly',
@@ -186,6 +188,7 @@ const fields = [
         }
     }, 
     {
+        name: 'activities',
         input: document.querySelector('#activities-box'),
         fillHint: 'Choose at least one activity',
         formatHint: '',
@@ -206,6 +209,7 @@ const fields = [
         }
     },
     {
+        name: 'cc-num',
         input: document.querySelector('#cc-num'),
         fillHint: 'Card number field cannot be blank',
         formatHint: 'Credit card number must be between 13 - 16 digits',
@@ -215,6 +219,7 @@ const fields = [
         }
     },
     {
+        name: 'zip',
         input: document.querySelector('#zip'),
         fillHint: 'Zip code field cannot be blank',
         formatHint: 'Zip Code must be 5 digits',
@@ -224,6 +229,7 @@ const fields = [
         }
     }, 
     {
+        name: 'cvv',
         input: document.querySelector('#cvv'),
         fillHint: 'CVV field cannot be blank',
         formatHint: 'CVV must be 3 digits',
@@ -256,7 +262,7 @@ function createListener(index, filledValidator, formattedValidator, fillHint, fo
     }
 }
 
-// Loop through the objects of the `fields` array, adding an event listener to each input element by calling `createListener`
+// Add an event listener to each input element by calling `createListener` with values from the `fields` array of objects
 function addListeners() {
     for (let i = 0; i < fields.length; i++) {
         let field = fields[i];
