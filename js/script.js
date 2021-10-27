@@ -108,15 +108,15 @@ activitiesDiv.addEventListener('change', e => {
 });
 
 // Make the focus states of the activties more apparent by adding or removing a 'focus' class
-function addActivityFocusState(event, labelClass) {
+function addActivityFocus(event, labelClass) {
     activitiesDiv.addEventListener(event, e => {
         const input = e.target;
         const label = input.parentNode;
         label.className = labelClass;
     });
 }
-addActivityFocusState('focusin', 'focus');
-addActivityFocusState('focusout', '');
+addActivityFocus('focusin', 'focus');
+addActivityFocus('focusout', '');
 
 /*
  *
