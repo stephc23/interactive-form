@@ -150,7 +150,7 @@ paymentSelect.addEventListener('change', e => {
 
 /*
  *
- * Form validation: real-time error messages
+ * Form validation: real-time conditional error messages
  * 
  */
 
@@ -236,7 +236,7 @@ const fields = [
         isFilled: createIsFilled(),
         isFormatted: cvv => {
             return /^\d{3}$/.test(cvv);
-        },
+        }
     }
 ];
 
