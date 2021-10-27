@@ -90,7 +90,7 @@ function disableConflicts(isDisabled, labelClass, selectedCheckbox, labels) {
     }
 }
 
-// When a 'change' event occurs on any checkbox, adjust total cost and call `disableTimeConflicts` function
+// When a 'change' event occurs on any checkbox, adjust total cost and call `disableConflicts` function
 activitiesDiv.addEventListener('change', e => {
     const checkbox = e.target;
     const checked = checkbox.checked;
