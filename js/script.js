@@ -154,7 +154,7 @@ paymentSelect.addEventListener('change', e => {
  * 
  */
 
-// Return a function that checks if an input value is filled, not an empty string or a series of spaces
+// Return a function that checks if an input value is filled (not blank)
 function createIsFilled() {
     return function(inputValue) {
         if (inputValue === '' || /^\s+$/.test(inputValue)) {
