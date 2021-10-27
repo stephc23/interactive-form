@@ -26,7 +26,7 @@ jobRoleSelect.addEventListener('change', e => {
 
 /*
  * 
- * In 'T-Shirt Info' section, enable color drop down menu only when design has been selected and display available colors
+ * In 'T-Shirt Info' section, enable color drop down menu only when design has been selected, and display available colors
  *
  */
 
