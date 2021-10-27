@@ -10,7 +10,7 @@
 * Real-time error messages are provided for the name, email, activities, card number, zip code, and cvv fields.
 
 #### Conditional error message
-* The real-time error message that displays differs depending on the nature of the invalid user input.
+* Some real-time error messages differ depending on the nature of the invalid user input.
     * If a field is left blank, the error message indicates that the field cannot be blank.
     * If a field is filled but formatted incorrectly, the error message references the required format.
 * Two validators are created for each field, one checking that it is not blank and another checking that it is formatted correctly.
