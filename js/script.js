@@ -62,8 +62,8 @@ const activitiesDiv = document.querySelector('#activities-box');
 const activitiesLabels = activitiesDiv.children;
 const activitiesCostP = document.querySelector('#activities-cost');
 
-// Return an array of checkbox inputs for activities whose time conflicts with that of the selected activity
-function findTimeConflicts(selectedCheckbox, labels) {
+// Return an array of checkbox inputs for activities whose day and time conflict with those of the selected activity
+function findConflicts(selectedCheckbox, labels) {
     const selectedTime = selectedCheckbox.dataset.dayAndTime;
     const selectedName = selectedCheckbox.name;
     const conflicts = [];
@@ -80,8 +80,8 @@ function findTimeConflicts(selectedCheckbox, labels) {
 }
 
 // Disable or enable the checkbox and label for each conflicting activity
-function disableTimeConflicts(isDisabled, labelClass, selectedCheckbox, labels) {
-    const conflictCheckboxes = findTimeConflicts(selectedCheckbox, labels);
+function disableConflicts(isDisabled, labelClass, selectedCheckbox, labels) {
+    const conflictCheckboxes = findConflicts(selectedCheckbox, labels);
     for (let i = 0; i < conflictCheckboxes.length; i++) {
         let checkbox = conflictCheckboxes[i];
         let label = checkbox.parentNode;
@@ -98,10 +98,10 @@ activitiesDiv.addEventListener('change', e => {
     let totalCost = parseInt(activitiesCostP.textContent.slice(8));
     if (checked) {
         totalCost += cost; 
-        disableTimeConflicts(true, 'disabled', checkbox, activitiesLabels);
+        disableConflicts(true, 'disabled', checkbox, activitiesLabels);
     } else {
         totalCost -= cost;
-        disableTimeConflicts(false, '', checkbox, activitiesLabels);
+        disableConflicts(false, '', checkbox, activitiesLabels);
     }
     const totalCostDisplay = `Total: $${totalCost}`;
     activitiesCostP.textContent = totalCostDisplay;
