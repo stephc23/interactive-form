@@ -165,7 +165,7 @@ function createIsFilled() {
     }
 }
 
-// Store input element, conditional error messages, and validator functions for each field in an array of objects called `fields`
+// Store element, conditional error messages, and validator functions for each field in an array of objects called `fields`
 const fields = [
     {
         name: 'name',
